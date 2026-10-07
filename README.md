@@ -45,7 +45,7 @@ Each lab is intended to demonstrate not only that something was configured succe
 | Firmware                  | UEFI / OVMF           |
 | Physical Secure Boot      | Disabled              |
 
-The Fedora system is my primary operating system, while Windows is retained as a backup operating system.
+The Fedora system is my primary operating system.
 
 ---
 
