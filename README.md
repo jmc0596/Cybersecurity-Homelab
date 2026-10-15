@@ -240,7 +240,6 @@ Professional description:
 * [ ] Web reconnaissance
 * [ ] Vulnerability testing
 * [ ] Web application security
-* [ ] Bleder security testing
 * [ ] Security assessment documentation
 
 ---
