@@ -164,6 +164,10 @@ The observed addresses were:
 | `eth0` | `10.10.10.101/24` | `lab-isolated` |
 | `eth1` | `192.168.122.130/24` | `default` NAT |
 
+![ip -br addr showing eth0 on 10.10.10.101/24 and eth1 on 192.168.122.130/24](screenshots/07-kali-dual-network-interfaces.png)
+
+*Screenshot 07: Both interfaces are `UP`, each with an IPv4 address on its own network.*
+
 The final routing table was:
 
 ```text
@@ -171,6 +175,10 @@ default via 192.168.122.1 dev eth1 proto dhcp src 192.168.122.130 metric 100
 10.10.10.0/24 dev eth0 proto kernel scope link src 10.10.10.101 metric 101
 192.168.122.0/24 dev eth1 proto kernel scope link src 192.168.122.130 metric 100
 ```
+
+![ip route showing the default route via eth1 and the 10.10.10.0/24 route on eth0](screenshots/08-kali-dual-network-routing.png)
+
+*Screenshot 08: The default route uses the NAT adapter (`eth1`); the isolated subnet is reached directly through `eth0`.*
 
 This confirms that the isolated subnet has its own directly connected route and that the default route uses the NAT adapter.
 
@@ -258,12 +266,12 @@ All future scanning and service-testing exercises must remain within the authori
 
 ## Evidence
 
-Screenshots will be stored in the [`screenshots/`](screenshots/) folder. Numbering continues from the Lab 03 screenshots.
+Screenshots are stored in the [`screenshots/`](screenshots/) folder. Numbering continues from the Lab 03 screenshots.
 
 | File | What it shows | Status |
 |---|---|---|
-| `07-kali-dual-network-interfaces.png` | Both interfaces and their IPv4 addresses | Pending capture |
-| `08-kali-dual-network-routing.png` | Routing table showing the NAT default route and isolated subnet route | Pending capture |
+| [`07-kali-dual-network-interfaces.png`](screenshots/07-kali-dual-network-interfaces.png) | Both interfaces and their IPv4 addresses | Captured |
+| [`08-kali-dual-network-routing.png`](screenshots/08-kali-dual-network-routing.png) | Routing table showing the NAT default route and isolated subnet route | Captured |
 | `09-kali-internet-connectivity.png` | Successful ping to `1.1.1.1` from inside Kali | Pending capture |
 | `10-kali-isolated-gateway.png` | Successful ping to `10.10.10.1` | Pending capture |
 
