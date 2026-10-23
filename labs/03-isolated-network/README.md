@@ -198,6 +198,14 @@ DNS lookup returned nothing, consistent with Kali having no DNS server and no pa
 
 ---
 
+## 6. Update: Dual-NIC Configuration
+
+After these tests, Kali kept its `lab-isolated` adapter and was given a second VirtIO adapter on the `default` NAT network. `eth0` stays on `lab-isolated` at `10.10.10.101/24`, and `eth1` uses NAT at `192.168.122.130/24` and carries the default route.
+
+Full procedure, routing table and connectivity tests: [`dual-nic-recovery.md`](dual-nic-recovery.md).
+
+---
+
 ## Evidence
 
 Screenshots are stored in the `screenshots/` folder.
@@ -230,7 +238,7 @@ Screenshots are stored in the `screenshots/` folder.
 - The bridge has an IP address (`10.10.10.1`), so the host can reach guests and guests can reach the bridge address. Guests are isolated from other networks, not from the host.
 - The tests show the guest's view only: it has no route out. They do not test the host's firewall or forwarding settings, which also affect isolation.
 - Only ICMP pings to selected addresses and one DNS lookup were tested. No port scans or other protocols were tested, and IPv6 reachability was not tested.
-- While Kali is attached to `lab-isolated` it has no internet access, so updates require temporarily moving it to the NAT network or adding a second network adapter.
+- With only the `lab-isolated` adapter, Kali has no internet access. This was later resolved by adding a second adapter on the NAT network (see [`dual-nic-recovery.md`](dual-nic-recovery.md)). The isolation results above apply to the single-adapter configuration.
 - Results are valid for the configuration at the time of testing.
 
 ---
@@ -240,4 +248,5 @@ Screenshots are stored in the `screenshots/` folder.
 - Install an Ubuntu VM as a defender machine on `lab-isolated` (Lab 04).
 - Test traffic between Kali and the defender, and observe it with `tcpdump`.
 - Review host firewall rules and IP forwarding settings that affect the isolation of `virbr10`.
-- Add a second network adapter for controlled updates, then remove it for exercises with vulnerable targets.
+- ~~Add a second network adapter for controlled updates.~~ Done: see [`dual-nic-recovery.md`](dual-nic-recovery.md).
+- Before running exercises with vulnerable targets, disconnect the NAT adapter or confirm that IP forwarding is disabled on Kali, so it cannot route between the two networks.

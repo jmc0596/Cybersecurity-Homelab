@@ -69,46 +69,44 @@ The Kali Linux virtual machine is used as the primary security-testing environme
 | Firmware          | UEFI / OVMF           |
 | Machine Type      | Q35                   |
 | Disk Interface    | VirtIO                |
-| Network Interface | VirtIO                |
+| NICs              | 2 × VirtIO            |
 | Hypervisor        | QEMU/KVM              |
-| Network           | libvirt `default` NAT |
+| Networks          | `lab-isolated` + `default` NAT |
 
 ---
 
 # Virtual Network
 
-The current Kali VM uses the default libvirt NAT network.
+The Kali VM has two virtual network adapters: one on the libvirt `default` NAT network for internet access, and one on the isolated `lab-isolated` network for lab exercises.
 
 ```text
-                    Internet
-                       │
-                       │
-                Fedora Host
-                       │
-                 QEMU / KVM
-                       │
-                  libvirt NAT
-                 192.168.122.0/24
-                       │
-                       │
-                 Kali-2026 VM
-                       │
-              192.168.122.195
+                         Internet
+                            │
+                       Fedora Host
+                            │
+                        QEMU / KVM
+               ┌────────────┴────────────┐
+               │                         │
+         libvirt NAT               lab-isolated
+      virbr0 192.168.122.0/24    virbr10 10.10.10.0/24
+       (forwarding: NAT)         (no forwarding)
+               │                         │
+               └──────┐           ┌──────┘
+                      │           │
+                 eth1 .130    eth0 .101
+                      └─ Kali-2026 ─┘
 ```
 
 ### Current Network Configuration
 
-| Component    | Address            |
-| ------------ | ------------------ |
-| Network      | `192.168.122.0/24` |
-| Gateway      | `192.168.122.1`    |
-| Kali VM      | `192.168.122.195`  |
-| Network Type | NAT                |
-| Management   | libvirt            |
+| Interface | Network        | Address              | Gateway / Bridge | Purpose                |
+| --------- | -------------- | -------------------- | ---------------- | ---------------------- |
+| `eth1`    | `default` NAT  | `192.168.122.130/24` | `192.168.122.1`  | Internet access (default route) |
+| `eth0`    | `lab-isolated` | `10.10.10.101/24`    | `10.10.10.1`     | Isolated lab exercises |
 
 The default NAT network provides controlled internet connectivity for the Kali VM without exposing the VM directly to the physical network.
 
-Future vulnerable target machines will use a **separate isolated virtual network** rather than the default NAT network. This will allow offensive-security exercises to be performed within a controlled lab environment.
+The isolated `lab-isolated` network (Lab 03) has no forwarding, so guests on it have no route to the internet or the home network. Future vulnerable target machines will be attached only to this network. Before exercises with vulnerable targets, Kali's NAT adapter should be disconnected or IP forwarding on Kali confirmed as disabled.
 
 ---
 
@@ -177,19 +175,19 @@ Professional description:
 
 ## Phase 2 — Networking
 
-* [ ] IP addressing
-* [ ] Subnetting
-* [ ] DHCP
-* [ ] DNS
-* [ ] Routing
-* [ ] NAT
+* [x] IP addressing
+* [x] Subnetting
+* [x] DHCP
+* [x] DNS
+* [x] Routing
+* [x] NAT
 * [ ] TCP/IP
 * [ ] UDP
 * [ ] Ports
 * [ ] Sockets
-* [ ] `ip`
+* [x] `ip`
 * [ ] `ss`
-* [ ] `ping`
+* [x] `ping`
 * [ ] `traceroute`
 * [ ] `tcpdump`
 * [ ] Wireshark
@@ -198,7 +196,7 @@ Professional description:
 ## Phase 3 — Offensive Security
 
 * [ ] Deploy vulnerable Linux target
-* [ ] Create isolated attack network
+* [x] Create isolated attack network
 * [ ] Network discovery
 * [ ] Port scanning
 * [ ] Service enumeration
@@ -275,6 +273,45 @@ Documentation:
 
 `labs/01-kali-vm/README.md`
 
+## Lab 02 — Network Fundamentals
+
+**Status:** Complete
+
+This lab investigates the Kali VM's network configuration on the libvirt `default` NAT network.
+
+Topics covered:
+
+* IPv4 addressing and subnetting
+* Routing tables and the default route
+* DNS configuration and resolution
+* Gateway and external connectivity testing
+* The host-side libvirt NAT network
+
+Documentation:
+
+`labs/02-network-fundamentals/README.md`
+
+## Lab 03 — Isolated Virtual Network
+
+**Status:** Complete
+
+This lab creates the `lab-isolated` libvirt network with no forwarding and tests that Kali has no route out of it. It was then extended with a second NAT adapter so Kali has internet access while staying attached to the isolated network.
+
+Topics covered:
+
+* libvirt network XML definitions
+* Creating and managing networks with `virsh`
+* NAT versus isolated networks
+* Host bridge and DHCP lease verification
+* Isolation testing and routing analysis
+* Multiple virtual NICs and NetworkManager connection profiles
+
+Documentation:
+
+`labs/03-isolated-network/README.md`
+
+`labs/03-isolated-network/dual-nic-recovery.md`
+
 ---
 
 # Evidence
@@ -301,14 +338,23 @@ Examples include:
 ```text
 homelab/
 ├── README.md
+├── .gitignore
 ├── journal/
 │   └── YYYY-MM-DD.md
 │
 └── labs/
-    └── 01-kali-vm/
+    ├── 01-kali-vm/
+    │   ├── README.md
+    │   ├── screenshots/
+    │   └── notes/
+    ├── 02-network-fundamentals/
+    │   ├── README.md
+    │   └── screenshots/
+    └── 03-isolated-network/
         ├── README.md
-        ├── screenshots/
-        └── notes/
+        ├── dual-nic-recovery.md
+        ├── config/
+        └── screenshots/
 ```
 
 As the homelab develops, additional labs will be added using the same structure.
@@ -390,6 +436,8 @@ The homelab will evolve alongside my BSc Cyber Security studies and will provide
 
 **Phase 1 — Infrastructure: Complete**
 
-**Current focus:** Networking fundamentals and continued development of the cybersecurity homelab.
+**Phase 2 — Networking: In progress** (Labs 02 and 03 complete)
 
-The next major objective is to develop a stronger understanding of networking before introducing vulnerable targets and offensive-security scenarios.
+**Current focus:** Creating an Ubuntu target VM on the `lab-isolated` network.
+
+The next major objective is to carry out controlled network discovery and port-scanning exercises between Kali and the target, entirely within the isolated lab network.
