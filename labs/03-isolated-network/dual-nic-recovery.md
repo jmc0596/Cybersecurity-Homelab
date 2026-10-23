@@ -199,7 +199,11 @@ Result:
 - Packets transmitted: 4
 - Packets received: 4
 - Packet loss: 0%
-- Average round-trip time: 0.341 ms
+- Average round-trip time: 0.289 ms
+
+![ping to 10.10.10.1 with 4 of 4 replies and 0% packet loss](screenshots/10-kali-isolated-gateway.png)
+
+*Screenshot 10: Kali reaches the isolated network's host-side gateway through `eth0`.*
 
 **Conclusion:** Kali can communicate with the host-side gateway of the isolated network.
 
@@ -233,7 +237,11 @@ The final test, performed inside Kali after both interfaces were configured, ret
 - Packets transmitted: 4
 - Packets received: 4
 - Packet loss: 0%
-- Average round-trip time: 91.768 ms
+- Average round-trip time: 83.827 ms
+
+![ping to 1.1.1.1 with 4 of 4 replies and 0% packet loss](screenshots/09-kali-internet-connectivity.png)
+
+*Screenshot 09: Kali reaches an external IPv4 address through the NAT adapter (`eth1`).*
 
 **Conclusion:** Kali can reach an external IPv4 address through its NAT connection.
 
@@ -272,8 +280,8 @@ Screenshots are stored in the [`screenshots/`](screenshots/) folder. Numbering c
 |---|---|---|
 | [`07-kali-dual-network-interfaces.png`](screenshots/07-kali-dual-network-interfaces.png) | Both interfaces and their IPv4 addresses | Captured |
 | [`08-kali-dual-network-routing.png`](screenshots/08-kali-dual-network-routing.png) | Routing table showing the NAT default route and isolated subnet route | Captured |
-| `09-kali-internet-connectivity.png` | Successful ping to `1.1.1.1` from inside Kali | Pending capture |
-| `10-kali-isolated-gateway.png` | Successful ping to `10.10.10.1` | Pending capture |
+| [`09-kali-internet-connectivity.png`](screenshots/09-kali-internet-connectivity.png) | Successful ping to `1.1.1.1` from inside Kali | Captured |
+| [`10-kali-isolated-gateway.png`](screenshots/10-kali-isolated-gateway.png) | Successful ping to `10.10.10.1` | Captured |
 
 ---
 
